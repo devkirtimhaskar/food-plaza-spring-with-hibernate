@@ -1,0 +1,18 @@
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+    <hibernate-mapping>
+    	<class name="com.kirti.foodplaza.pojo.Food" table="food_22063">
+    	<id name="foodId" column="food_id"><!-- column="food_id" -->
+    		<generator class="identity"></generator>
+    	</id>
+    	<property name="foodName" column="food_name"/><!--  column="food_name" -->
+    	 <property name="foodCategory" column="food_category"/>
+    	<property name="foodPrice" column="food_price"/>
+    	<property name="foodDescription" column="food_desc"/>
+    	<property name="foodImage" column="food_image"/>
+    	</class>
+    
+    </hibernate-mapping>
+

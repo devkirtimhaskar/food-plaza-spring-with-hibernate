@@ -1,0 +1,83 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:tx="http://www.springframework.org/schema/tx"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:mvc="http://www.springframework.org/schema/mvc"  
+    xsi:schemaLocation="  
+        http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://www.springframework.org/schema/context  
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx.xsd  
+        http://www.springframework.org/schema/mvc  
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+
+        <!-- this is used to scan all the controller which present in this package -->
+        <context:component-scan base-package="com.kirti.foodplaza.contoller"/>
+        <mvc:annotation-driven/>
+        
+        <!-- to configure folder our files present in view folder so by using this we can easily change prefix and suffix -->
+        <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        	<property name="prefix" value="resources/view/"/>
+        	<property name="suffix" value=".jsp"/>
+        </bean>
+        
+        <!-- for mapping .Jsp,Javascript file we should create one folder put all the files inside that like jsp,js file-->
+        <mvc:resources location="/resources/" mapping="/resources/**"/>
+        
+        
+        <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+			<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />	
+			<property name="url" value="jdbc:mysql://localhost:3306/foodplazaspring_22063" /> 
+			<property name="username" value="root" /> 
+			<property name="password" value="9082695154" />        	
+        </bean>
+        
+        <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+			<property name="dataSource" ref="dataSource"/>
+			<property name="hibernateProperties">
+				<props>
+					<prop key="hibernate.hbm2ddl.auto">update</prop>
+					<prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>	
+					<prop key="hibernate.show_sql">true</prop>
+				</props>
+			</property>
+			<property name="mappingResources">
+			<list>
+				<value>food.hbm.xml</value>
+				<value>customer.hbm.xml</value>
+				
+			</list>
+			</property>	
+			<property name="packagesToScan">
+				<list>
+					<value>com.kirti.foodplaza.pojo</value>
+				</list>
+			</property>
+	</bean>
+	<bean name="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate" autowire="constructor">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="tm" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<!-- it is used to active annotation <tx-annoation>-->
+		<tx:annotation-driven transaction-manager="tm" proxy-target-class="true"/>
+	
+	<!-- id="fdao" is used for mapping in controller and its the name of "@Autowired FoodDao fdao" comming from foddController -->
+	<bean id="fdao" class="com.kirti.foodplaza.dao.impl.FoodDaoImpl" autowire="constructor"/>
+    <bean id="cdao" class="com.kirti.foodplaza.dao.impl.CustomerDaoImpl" autowire="constructor"/>
+    <bean id="ldao" class="com.kirti.foodplaza.dao.impl.LoginDaoImpl" autowire="constructor"/>
+	<bean id="cartDao" class="com.kirti.foodplaza.dao.impl.CartDaoImpl" autowire="constructor"/>
+	<bean id="orderDao" class="com.kirti.foodplaza.dao.impl.OrderDaoImpl" autowire="byType"></bean>
+	    
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<property name="maxUploadSize" value="20971520"></property>
+    </bean>
+    
+    
+ </beans>       
